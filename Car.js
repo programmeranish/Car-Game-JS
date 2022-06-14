@@ -7,6 +7,22 @@ function getRandomNumber(min, max) {
 
 const roadContainer = document.getElementsByClassName("road-container")[0];
 
+function checkCollision(obj1, obj2) {
+  let x1 = parseInt(window.getComputedStyle(obj1.car).left);
+  let y1 = parseInt(window.getComputedStyle(obj1.car).bottom);
+  let h1 = obj1.car.height;
+  let w1 = obj1.car.width;
+  let x2 = parseInt(window.getComputedStyle(obj2.car).left);
+  let y2 = parseInt(window.getComputedStyle(obj2.car).bottom);
+  let h2 = obj2.car.height;
+  let w2 = obj2.car.width;
+  if (x2 > w1 + x1 || x1 > w2 + x2 || y1 > y2 + h2 || y2 > y1 + h1) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 class Car {
   constructor(
     mainCar = false,
@@ -65,6 +81,10 @@ class Car {
       return false;
     }
   }
+  displayCrashImage() {
+    this.car.setAttribute("src", "./assests/images/crsh.jpg");
+    this.roadContainer.style.animationPlayState = "paused";
+  }
   removeElement() {
     this.roadContainer.removeChild(this.car);
   }
@@ -77,12 +97,12 @@ let enemyCars = [
   new Car(
     false,
     getRandomNumber(0, 3),
-    400,
+    800,
     getRandomNumber(0, 3) *
       (parseInt(window.getComputedStyle(roadContainer).width) / 3)
   ),
 ];
-setInterval(() => {
+let intervalId = setInterval(() => {
   enemyCars.push(
     new Car(
       false,
@@ -92,19 +112,34 @@ setInterval(() => {
         (parseInt(window.getComputedStyle(roadContainer).width) / 3)
     )
   );
-}, 5000);
+}, 8000);
+
+let score = 0;
+let frameId;
+let crash = false;
 function play() {
-  let frameId = window.requestAnimationFrame(() => {
+  frameId = window.requestAnimationFrame(() => {
     enemyCars.forEach((enemyCar, index) => {
-      enemyCar.moveDown(1);
-      if (enemyCar.checkOutTrack()) {
-        let shiftedElement = enemyCars.shift();
-        shiftedElement.removeElement();
-        delete shiftedElement;
+      crash = checkCollision(mainCar, enemyCar);
+      if (crash) {
+        gameOver();
+      } else {
+        enemyCar.moveDown(1);
+        if (enemyCar.checkOutTrack()) {
+          let shiftedElement = enemyCars.shift();
+          shiftedElement.removeElement();
+          delete shiftedElement;
+          score += 1;
+        }
       }
     });
-
-    play();
+    if (!crash) play();
   });
 }
 play();
+function gameOver() {
+  clearInterval(intervalId);
+  cancelAnimationFrame(frameId);
+  console.log("game over");
+  mainCar.displayCrashImage();
+}
