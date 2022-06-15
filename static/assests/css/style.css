@@ -1,0 +1,46 @@
+.game-container {
+  width: 80%;
+  height: 100vh;
+  margin: auto;
+  border: 2px solid red;
+}
+
+.background-container {
+  width: 100%;
+  height: 100%;
+  border: 2px solid black;
+}
+.road-container {
+  position: relative;
+  width: 550px;
+  height: 100vh;
+  margin: auto;
+  border: 2px solid orange;
+
+  background-image: url("../images/road.png");
+  background-repeat: repeat;
+  background-position: left;
+  background-size: 200px;
+  animation: animate-road 2s infinite normal forwards;
+  animation-timing-function: linear;
+  overflow: hidden;
+}
+.road-container > div:hover {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  cursor: pointer;
+}
+#high-score {
+  position: absolute;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-size: 900;
+}
+@keyframes animate-road {
+  0% {
+    background-position: 18% 0;
+  }
+  100% {
+    background-position: 18% 100%;
+  }
+}
