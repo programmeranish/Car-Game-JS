@@ -117,7 +117,13 @@ function keyPressFunction(event, car) {
 
 //main play game
 function playGame() {
-  const mainCar = new Car(true, 0, 0, 0, 20);
+  const mainCar = new Car(
+    true,
+    0,
+    0,
+    parseInt(window.getComputedStyle(roadContainer).width) / 3,
+    20
+  );
   document.addEventListener("keydown", (event) =>
     keyPressFunction(event, mainCar)
   );
