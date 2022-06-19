@@ -6,22 +6,7 @@ function getRandomNumber(min, max) {
 }
 
 const roadContainer = document.getElementsByClassName("road-container")[0];
-
 let playButton = document.createElement("div");
-playButton.style.position = "absolute";
-playButton.style.left = "calc(50% - 100px)";
-playButton.style.top = "50%";
-playButton.style.zIndex = "1";
-playButton.innerHTML = "<h1>Play</h1>";
-playButton.style.fontSize = "40px";
-playButton.style.color = "yellow";
-playButton.onclick = () => {
-  playGame();
-  playButton.style.display = "none";
-};
-
-roadContainer.appendChild(playButton);
-
 function checkCollision(obj1, obj2) {
   let x1 = parseInt(window.getComputedStyle(obj1.car).left);
   let y1 = parseInt(window.getComputedStyle(obj1.car).bottom);
@@ -37,7 +22,22 @@ function checkCollision(obj1, obj2) {
     return true;
   }
 }
+function playGamePage() {
+  playButton.style.position = "absolute";
+  playButton.style.left = "calc(50% - 85px)";
+  playButton.style.top = "50%";
+  playButton.style.zIndex = "1";
+  playButton.innerHTML = "<h1>Play</h1>";
+  playButton.style.fontSize = "40px";
+  playButton.style.color = "yellow";
+  playButton.onclick = () => {
+    playGame();
+    playButton.style.display = "none";
+  };
 
+  roadContainer.appendChild(playButton);
+}
+playGamePage();
 class Car {
   constructor(
     mainCar = false,
@@ -45,8 +45,8 @@ class Car {
     bottom,
     left,
     carMoveSpeed = 10,
-    carWidth = 150,
-    carHeight = 250
+    carWidth = 100,
+    carHeight = 170
   ) {
     this.roadContainer = document.getElementsByClassName("road-container")[0];
     this.roadContainerWidth = parseInt(
@@ -185,12 +185,33 @@ function playGame() {
       if (!crash) play();
     });
   }
-  play();
+  if (!crash) play();
   function gameOver() {
+    let gameContainer = document.getElementsByClassName("game-container")[0];
     clearInterval(intervalId);
     cancelAnimationFrame(frameId);
     console.log("game over");
     mainCar.displayCrashImage();
     document.removeEventListener("keydown", keyPressFunction);
+    let gameOver = document.createElement("div");
+    gameOver.style.height = "100vh";
+    gameOver.style.width = "100%";
+    gameOver.style.position = "absolute";
+    gameOver.style.zIndex = "3";
+    gameOver.style.left = window.getComputedStyle(roadContainer).width / 2;
+    gameOver.style.color = "red";
+    gameOver.style.top = "0px";
+    gameOver.style.textAlign = "center";
+    gameOver.style.backgroundColor = "rgb(0,0,0,0.5)";
+    gameOver.addEventListener("click", () => {
+      console.log("play game");
+      playGame();
+      play();
+      gameOver.remove();
+    });
+    gameOver.innerHTML = `<h1>Game Over</h1><br><h2>Click to try again</h2><br><h3>Your Score : ${score}</h3>`;
+    setTimeout(() => {
+      gameContainer.appendChild(gameOver);
+    }, 3000);
   }
 }
